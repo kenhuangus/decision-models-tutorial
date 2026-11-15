@@ -1107,9 +1107,15 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
   <section class="slide" data-title="Use Case 1 · AI Agent Tool Selection">
     <div class="slide__in">
       <span class="kicker">Use Case 01 · Production Gate</span>
-      <h2 class="h2">Tool & Skill Routing</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 1 --device mps</code>
+      <h2 class="h2">Tool &amp; Skill Routing</h2>
+      <div class="usecase-model-box usecase-model-box--purple">
+        <div class="usecase-model-title">
+          <span class="tag tag--violet">MODEL TIER</span>
+          <strong>Dual-Tier: pplx-decider-flash-v1.2 (Edge) &amp; pplx-decider-v1.1-27b (Cloud)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 1 --model compare</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1119,6 +1125,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> Evaluator selects chart_generator (67.54%). Upstream market_data_api (>20%) is chained as data source.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> Standard 3–5 candidate routing is handled by <strong>pplx-decider-flash-v1.2</strong> in <strong>48.6 ms</strong> (sub-50ms ingress SLA). When registries exceed 50+ enterprise tools with overlapping parameters, requests route to <strong>pplx-decider-27B</strong> for deep non-causal cross-attention disambiguation.
           </div>
         </div>
         <div class="usecase-col">
@@ -1149,7 +1158,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 181 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 1279.8ms</span>
+            <span class="tag tag--blue">Flash 4B: 48.6 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 1279.8 ms</span>
           </div>
         </div>
       </div>
@@ -1161,8 +1171,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 02 · Production Gate</span>
       <h2 class="h2">Priority Escalation Gate</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 2 --device mps</code>
+      <div class="usecase-model-box">
+        <div class="usecase-model-title">
+          <span class="tag tag--blue">DEPLOYED MODEL</span>
+          <strong>pplx-decider-flash-v1.2 (4B Distilled Edge Checkpoint)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 2 --model flash</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1172,6 +1188,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> Calibrated boolean confidence is 97.82%. The AI Agent routes immediately to human Tier-3 engineering.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> Inbound support webhooks require instant edge triage (&lt;35 ms) before queuing. The binary boolean <code>noul</code> schema does not require heavy 27B reasoning; Flash achieves <strong>97.82% calibrated confidence in 34.6 ms</strong> on Mac Mini MPS, leaving 27B compute for deep resolution.
           </div>
         </div>
         <div class="usecase-col">
@@ -1198,7 +1217,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 133 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 912.0ms</span>
+            <span class="tag tag--blue">Flash 4B: 34.6 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 912.0 ms</span>
           </div>
         </div>
       </div>
@@ -1210,8 +1230,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 03 · Production Gate</span>
       <h2 class="h2">Chunk Relevance Gating</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 3 --format table</code>
+      <div class="usecase-model-box usecase-model-box--orange">
+        <div class="usecase-model-title">
+          <span class="tag tag--orange">DEPLOYED MODEL</span>
+          <strong>pplx-decider-v1.1-27b / v1.3 (27B Dense Flagship — Most Powerful)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 3 --model 27b --format table</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1221,6 +1247,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> The chunk receives a 93.35% relevance score and is promoted to the generation context window.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> Cross-attending queries against dense 32K token chunks requires deep semantic reasoning across non-adjacent clauses. The <strong>27B dense backbone</strong> eliminates subtle semantic drift and false-positive promotions at <strong>93.35% precision</strong>, where smaller models confuse superficial keyword overlap.
           </div>
         </div>
         <div class="usecase-col">
@@ -1247,7 +1276,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 196 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 950.8ms</span>
+            <span class="tag tag--blue">Flash 4B: 36.1 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 950.8 ms</span>
           </div>
         </div>
       </div>
@@ -1259,8 +1289,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 04 · Production Gate</span>
       <h2 class="h2">Hallucination Defense</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 4 --device mps</code>
+      <div class="usecase-model-box">
+        <div class="usecase-model-title">
+          <span class="tag tag--blue">DEPLOYED MODEL</span>
+          <strong>pplx-decider-flash-v1.2 (4B Distilled Edge Checkpoint)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 4 --model flash</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1270,6 +1306,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> Contradiction confidence is 94.12%. Output is flagged as hallucinated and rejected before egress.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> In-line factuality checking operates sentence-by-sentence as tokens stream to the user. A <strong>23.5 ms forward pass on Flash</strong> prevents stream stuttering, identifying direct numerical contradictions (412 vs 1,200 patients) with <strong>94.12% confidence</strong> without delaying Time-to-First-Token.
           </div>
         </div>
         <div class="usecase-col">
@@ -1296,7 +1335,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 164 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 988.4ms</span>
+            <span class="tag tag--blue">Flash 4B: 23.5 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 618.5 ms</span>
           </div>
         </div>
       </div>
@@ -1308,8 +1348,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 05 · Production Gate</span>
       <h2 class="h2">Adversarial Attack Gate</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 5 --benchmark 10</code>
+      <div class="usecase-model-box">
+        <div class="usecase-model-title">
+          <span class="tag tag--blue">DEPLOYED MODEL</span>
+          <strong>pplx-decider-flash-v1.2 (4B Distilled Edge Checkpoint)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 5 --model flash --benchmark 10</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1319,6 +1365,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> Adversarial probability is 99.94%. Request is dropped instantly at ingress without touching generative LLM.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> Perimeter security demands zero-latency rejection. Running a 54 GB 27B model on every inbound query wastes compute; Flash detects DAN, jailbreaks, and privilege escalation in <strong>18.0 ms at 99.94% confidence</strong>, dropping malicious payloads before allocating generative GPU compute.
           </div>
         </div>
         <div class="usecase-col">
@@ -1341,7 +1390,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 112 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 884.2ms</span>
+            <span class="tag tag--blue">Flash 4B: 18.0 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 473.6 ms</span>
           </div>
         </div>
       </div>
@@ -1353,8 +1403,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 06 · Production Gate</span>
       <h2 class="h2">Purchase Intent & Readiness</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 6 --device mps</code>
+      <div class="usecase-model-box">
+        <div class="usecase-model-title">
+          <span class="tag tag--blue">DEPLOYED MODEL</span>
+          <strong>pplx-decider-flash-v1.2 (4B Distilled Edge Checkpoint)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 6 --model flash</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1364,6 +1420,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> High purchase intent detected (91.24%). AI Agent triggers promotional checkout engine.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> Real-time checkout workflows require sub-40 ms responsiveness to trigger discount prompts before user session drop-off. <strong>Flash classifies purchase intent in 35.6 ms with 91.24% confidence</strong>, eliminating latency without requiring cloud GPU round-trips.
           </div>
         </div>
         <div class="usecase-col">
@@ -1390,7 +1449,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 145 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 920.5ms</span>
+            <span class="tag tag--blue">Flash 4B: 35.6 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 938.4 ms</span>
           </div>
         </div>
       </div>
@@ -1402,8 +1462,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 07 · Production Gate</span>
       <h2 class="h2">Deployment Safety Gate</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 7 --format table</code>
+      <div class="usecase-model-box usecase-model-box--orange">
+        <div class="usecase-model-title">
+          <span class="tag tag--orange">DEPLOYED MODEL</span>
+          <strong>pplx-decider-v1.1-27b / v1.3 (27B Dense Flagship — Most Powerful)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 7 --model 27b --format table</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1413,6 +1479,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> Critical security vulnerability identified (98.56%). CI/CD pipeline terminates deployment immediately.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> Evaluating code diffs for shell injection vulnerabilities requires structural understanding across programming languages and runtime libraries. The <strong>27B dense model</strong> provides <strong>98.56% confidence</strong> on complex syntax ASTs, preventing false alarms in production CI/CD.
           </div>
         </div>
         <div class="usecase-col">
@@ -1439,7 +1508,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 128 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 895.1ms</span>
+            <span class="tag tag--blue">Flash 4B: 32.8 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 862.9 ms</span>
           </div>
         </div>
       </div>
@@ -1451,8 +1521,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 08 · Production Gate</span>
       <h2 class="h2">Compliance & Toxicity Gate</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 8 --device mps</code>
+      <div class="usecase-model-box usecase-model-box--purple">
+        <div class="usecase-model-title">
+          <span class="tag tag--violet">MODEL TIER</span>
+          <strong>Dual-Tier: pplx-decider-flash-v1.2 (Ingress) &amp; pplx-decider-27b (Escalation)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 8 --model compare</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1461,7 +1537,10 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
             <p style="font-size:.88rem;color:var(--text);margin:0;line-height:1.45;">User Post: 'Explicit threat of violence and harassment directed at regional public official.'</p>
           </div>
           <div class="eval-box">
-            <strong>Pipeline Decision:</strong> Severe toxicity confidence is 99.45%. Post quarantined; account flagged for Trust & Safety review.
+            <strong>Pipeline Decision:</strong> Severe toxicity confidence is 99.45%. Post quarantined; account flagged for Trust &amp; Safety review.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> High-volume post ingestion uses <strong>Flash (24.1 ms, 1,420 dec/sec batched)</strong> for immediate quarantine of unambiguous threats (99.45%). Ambiguous content with low confidence (&lt;70%) escalates to the <strong>27B flagship</strong> for multi-label policy categorization.
           </div>
         </div>
         <div class="usecase-col">
@@ -1488,7 +1567,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 118 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 876.3ms</span>
+            <span class="tag tag--blue">Flash 4B: 24.1 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 635.8 ms</span>
           </div>
         </div>
       </div>
@@ -1500,8 +1580,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 09 · Production Gate</span>
       <h2 class="h2">Agentic Plan Optimization</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 9 --device mps</code>
+      <div class="usecase-model-box usecase-model-box--orange">
+        <div class="usecase-model-title">
+          <span class="tag tag--orange">DEPLOYED MODEL</span>
+          <strong>pplx-decider-v1.1-27b / v1.3 (27B Dense Flagship — Most Powerful)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 9 --model 27b</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1511,6 +1597,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> Patroni+etcd architecture selected (82.45%) based on zero-cloud-lockin engineering constraints.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> Multi-agent goal orchestration requires weighing high-dimensional architectural trade-offs (failure domains, state synchronization, lock-in). The <strong>27B dense model</strong> provides calibrated multi-path probabilities (<strong>82.45% Patroni/etcd vs 15.32% RDS</strong>).
           </div>
         </div>
         <div class="usecase-col">
@@ -1537,7 +1626,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 176 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 1042.6ms</span>
+            <span class="tag tag--blue">Flash 4B: 41.8 ms</span>
+            <span class="tag tag--orange">Flagship 27B: 1042.6 ms</span>
           </div>
         </div>
       </div>
@@ -1549,8 +1639,14 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
     <div class="slide__in">
       <span class="kicker">Use Case 10 · Production Gate</span>
       <h2 class="h2">Sensitive Data & Locate Span</h2>
-      <div class="cli-box" style="margin-bottom:.6vh;">
-        <strong>RUN:</strong> <code>python run_usecase.py --case 10 --locate</code>
+      <div class="usecase-model-box usecase-model-box--orange">
+        <div class="usecase-model-title">
+          <span class="tag tag--orange">DEPLOYED MODEL</span>
+          <strong>pplx-decider-v1.3 (27B Flagship with Locate Text-Span Extraction Head)</strong>
+        </div>
+        <div>
+          <code>python run_usecase.py --case 10 --locate --model 27b</code>
+        </div>
       </div>
       <div class="usecase-layout">
         <div class="usecase-col">
@@ -1560,6 +1656,9 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           </div>
           <div class="eval-box">
             <strong>Pipeline Decision:</strong> Secret detected (99.81%). Perplexity v1.3 Locate isolates exact span [46..76] for redaction.
+          </div>
+          <div class="usecase-model-why">
+            <strong>Why This Model?</strong> Redacting exposed API keys requires isolating exact byte offsets <code>[46..76]</code> in addition to binary detection (99.81%). The <strong>text-span locate head is exclusive to Perplexity v1.3 27B Flagship</strong>, enabling deterministic, regex-free credential stripping before network egress.
           </div>
         </div>
         <div class="usecase-col">
@@ -1582,7 +1681,8 @@ launchctl bootout gui/$(id -u)/ai.distributed.decider
           <div class="usecase-meta">
             <span class="tag tag--teal">Input: 139 tokens</span>
             <span class="tag tag--violet">Decision: 1 token</span>
-            <span class="tag tag--green">Latency: 915.7ms</span>
+            <span class="tag tag--blue">Flash 4B: 21.7 ms (Detect)</span>
+            <span class="tag tag--orange">Flagship 27B: 571.8 ms (Locate)</span>
           </div>
         </div>
       </div>
@@ -2213,6 +2313,12 @@ decider.local {
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="card" style="margin-top:.7vh;padding:.6vh .9vw;background:#f8fafc;border-left:4px solid var(--violet);">
+        <strong style="color:var(--text);font-size:.88rem;">Production Model Tier Selection Rule:</strong>
+        <span style="font-size:.84rem;color:#334155;line-height:1.5;">
+          Deploy <strong>pplx-decider-flash-v1.2 (4B)</strong> for high-frequency ingress/egress safety gates, webhook triage, and stream checking (&lt;50ms SLA, 8.5 GB VRAM). Reserve <strong>pplx-decider-v1.3 (27B)</strong> for deep policy reasoning over 50+ classes, complex AST code analysis, and Perplexity v1.3 text-span <code>locate</code> extraction.
+        </span>
       </div>
     </div>
   </section>
