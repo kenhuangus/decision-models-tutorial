@@ -135,7 +135,11 @@
   // deep-link via hash
   function readHash() {
     const start = parseInt((location.hash || "").replace("#", ""), 10);
-    if (!isNaN(start)) go(start - 1);
+    if (!isNaN(start)) {
+      go(start - 1);
+    } else {
+      go(0);
+    }
   }
   window.addEventListener("hashchange", readHash);
   readHash();
