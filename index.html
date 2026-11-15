@@ -44,7 +44,7 @@
       <span class="eyebrow">Perplexity AI · AI Agent Architecture · Systems Engineering</span>
       <h1 class="hero__title">DECISION MODEL WITH PERPLEXITY</h1>
       <p class="hero__acronym"><b>Calibrated</b> Probabilities · <b>Zero</b> Hallucination · <b>Non-Causal</b> Readout</p>
-      <p class="hero__sub">Featuring <strong>Perplexity's Decision Model Family</strong><br/>The <strong>Deterministic Policy &amp; Routing Engine</strong> for Modern AI Agents<br/><span style="display:inline-block;margin-top:.4vh;font-size:.92rem;color:var(--text);background:#eff6ff;padding:.2rem .8rem;border-radius:999px;border:1px solid #bfdbfe;"><strong>Exact Deployed Lab Models:</strong> <code>perplexity-ai/pplx-decider-v1.1-27b</code> (Flagship) &amp; <code>pplx-decider-flash-v1.2</code> (Mac Mini MPS)</span></p>
+      <p class="hero__sub">Featuring <strong>Perplexity's Decision Model Family</strong><br/>The <strong>Deterministic Policy &amp; Routing Engine</strong> for Modern AI Agents<br/><span style="display:inline-block;margin-top:.4vh;font-size:.92rem;color:var(--text);background:#eff6ff;padding:.2rem .8rem;border-radius:999px;border:1px solid #bfdbfe;"><strong>Exact Lab Models Evaluated:</strong> <code>perplexity-ai/pplx-decider-v1.1-27b</code> (27B Dense Flagship — Most Powerful) &amp; <code>pplx-decider-flash-v1.2</code> (4B Distilled Edge)</span></p>
       <p class="hero__by">Presented by <strong>Ken Huang, CISSP</strong><br/>Adjunct Professor, University of San Francisco (USF) · CEO, DistributedApps.ai</p>
     </div>
   </section>
@@ -188,7 +188,7 @@
       <span class="kicker">Model Deep Dive</span>
       <h2 class="h2">Inside Perplexity's Decision Model Family (pplx-decider)</h2>
       <div class="cli-box" style="margin-bottom:.5vh;border-left:4px solid var(--green);background:var(--green-light);">
-        <strong>EXACT MODELS DEPLOYED IN THIS TUTORIAL:</strong> Primary Flagship: <code>perplexity-ai/pplx-decider-v1.1-27b</code> (27B Dense) | Live Mac Mini MPS Node: <code>perplexity-ai/pplx-decider-flash-v1.2</code> (4B Distilled)
+        <strong>EXACT LAB MODELS EVALUATED:</strong> Flagship Tier: <code>perplexity-ai/pplx-decider-v1.1-27b</code> (27B Dense — Most Powerful) | Edge Node Tier: <code>perplexity-ai/pplx-decider-flash-v1.2</code> (4B Distilled)
       </div>
       <div class="grid-3">
         <div class="card card--accent">
@@ -535,17 +535,17 @@ rm -rf ~/.cache/huggingface/hub/tmp*
           </p>
           <div class="code-box">
             <code>
-<span class="code-hl-comm"># Run Use Case 1 using deployed model (pplx-decider-flash-v1.2 / v1.1-27b)</span>
-python run_usecase.py --case 1 --device mps --format table
+<span class="code-hl-comm"># Compare 4B Flash (Edge) vs. 27B Flagship (Most Powerful) side-by-side</span>
+python run_usecase.py --case 1 --model compare
 
-<span class="code-hl-comm"># Run with custom confidence threshold on CUDA GPU</span>
-python run_usecase.py --case 5 --device cuda --threshold 0.85
+<span class="code-hl-comm"># Run Use Case 1 using the most powerful 27B model on MPS</span>
+python run_usecase.py --case 1 --model 27b --format table
 
-<span class="code-hl-comm"># Execute latency benchmark over 10 consecutive passes</span>
-python run_usecase.py --case 3 --benchmark 10 --device mps
+<span class="code-hl-comm"># Run High-Speed 4B Flash model with custom 85% safety threshold</span>
+python run_usecase.py --case 5 --model flash --threshold 0.85
 
-<span class="code-hl-comm"># Test Perplexity v1.3 Locate text-span extraction</span>
-python run_usecase.py --case 10 --locate --format table
+<span class="code-hl-comm"># Test Perplexity v1.3 Locate text-span extraction on 27B</span>
+python run_usecase.py --case 10 --locate --model 27b
             </code>
           </div>
         </div>
@@ -692,6 +692,7 @@ python run_usecase.py [OPTIONS]
 Options:
   --case &lt;1-10&gt;       Execute specific production use case (1 to 10)
   --all               Execute all 10 use cases sequentially
+  --model &lt;tier&gt;      Model tier: flash (4B edge default), 27b (dense flagship), compare
   --device &lt;target&gt;   Hardware target: mps (Apple Silicon), cuda, cpu (default: mps)
   --threshold &lt;float&gt; Confidence gating threshold between 0.0 and 1.0 (default: 0.70)
   --format &lt;mode&gt;     Output display mode: table, json, summary (default: table)
@@ -704,17 +705,17 @@ Options:
           <h3 class="h3">Sample Run Commands for Students</h3>
           <div class="code-box">
             <code>
-<span class="code-hl-comm"># Run Tool Selection Gate with visual ASCII probability distribution</span>
-python run_usecase.py --case 1 --format table
+<span class="code-hl-comm"># Compare 4B Flash (Edge) vs. 27B Flagship (Most Powerful) side-by-side</span>
+python run_usecase.py --case 1 --model compare
 
-<span class="code-hl-comm"># Test Prompt Injection Filter with strict 85% safety threshold</span>
-python run_usecase.py --case 5 --threshold 0.85
+<span class="code-hl-comm"># Run Tool Selection Gate with 27B Flagship on Metal MPS</span>
+python run_usecase.py --case 1 --model 27b --format table
 
-<span class="code-hl-comm"># Benchmark Latency over 20 consecutive passes on Mac Mini</span>
-python run_usecase.py --case 1 --benchmark 20 --device mps
+<span class="code-hl-comm"># Test Prompt Injection Filter with strict 85% safety threshold (Flash)</span>
+python run_usecase.py --case 5 --model flash --threshold 0.85
 
-<span class="code-hl-comm"># Execute complete 10-gate production test suite</span>
-python run_usecase.py --all --device mps
+<span class="code-hl-comm"># Run Secret Leakage Prevention with Perplexity v1.3 Locate (27B)</span>
+python run_usecase.py --case 10 --locate --model 27b
             </code>
           </div>
         </div>

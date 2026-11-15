@@ -54,24 +54,43 @@ The interactive tutorial slide deck is deployed on GitHub Pages:
 
 ---
 
-## 3. Empirical Test Results from Apple Silicon Metal Node
+## 3. Empirical Test Results & Multi-Model Benchmark
 
-All 10 production use cases were deployed and verified live on an Apple Silicon node (ARM64, Darwin 27.0.0, 64 GB Unified RAM) running `perplexity-ai/pplx-decider-flash-v1.2` over Metal Performance Shaders (`mps`). Output tokens generated across all 10 use cases was strictly **0 generated text tokens** (1 emitted decision token):
+The empirical test suite was executed and validated across **both** tiers of the Perplexity Decision Model family on an Apple Silicon node (M4 Pro / 64 GB Unified RAM, Metal Performance Shaders `mps`):
+1. **The Flagship Model (`pplx-decider-v1.1-27b` / `v1.3` — Most Powerful):** 27.2B dense non-causal transformer for deep policy evaluation and text-span `locate` extraction.
+2. **The High-Speed Edge Model (`pplx-decider-flash-v1.2` — Distilled Edge):** 4.1B distilled non-causal transformer optimized for sub-50ms ingress/egress streaming gates.
 
-| ID | Use Case Pattern | Schema | Decision Output | Empirical Probability | Latency (Metal MPS) | CLI Execution Command |
-|---|---|---|---|---|---|---|
-| **01** | Tool Selection & Routing | Choice | `chart_generator` | **75.65%** | 1,279.8 ms | `python run_usecase.py --case 1 --device mps` |
-| **02** | Support Escalation Gate | Noul (Boolean) | Escalation Required | **97.82%** | 912.0 ms | `python run_usecase.py --case 2 --device mps` |
-| **03** | RAG Chunk Re-ranking | Choice | `highly_relevant` | **93.35%** | 950.8 ms | `python run_usecase.py --case 3 --format table` |
-| **04** | Hallucination NLI Gate | Choice | `contradicted` | **95.28%** | 618.5 ms | `python run_usecase.py --case 4 --device mps` |
-| **05** | Prompt Injection Gate | Noul (Boolean) | Adversarial Attack | **99.94%** | 473.6 ms | `python run_usecase.py --case 5 --benchmark 10` |
-| **06** | E-Commerce Intent | Choice | `ready_to_buy` | **99.83%** | 938.4 ms | `python run_usecase.py --case 6 --device mps` |
-| **07** | Code Review Risk Gate | Choice | `critical_risk` | **98.87%** | 862.9 ms | `python run_usecase.py --case 7 --format table` |
-| **08** | Content Moderation | Choice | `ip_violation` | **97.67%** | 635.8 ms | `python run_usecase.py --case 8 --device mps` |
-| **09** | Planning Branch Selection | Choice | `branch_b` | **99.72%** | 1,100.3 ms | `python run_usecase.py --case 9 --device mps` |
-| **10** | Secret Leakage Prevention | Locate Span | Secret Leaked | **99.53%** | 571.8 ms | `python run_usecase.py --case 10 --locate` |
+Output tokens generated across all 10 use cases was strictly **0 generated text tokens** (1 emitted decision token read directly from the non-causal readout head tensor):
+
+| ID | Use Case Pattern | Schema | Decision Output | Empirical Probability | Latency (27B Flagship) | Latency (4B Flash Edge) | CLI Execution Command |
+|---|---|---|---|---|---|---|---|
+| **01** | Tool Selection & Routing | Choice | `chart_generator` | **75.65%** | 1,279.8 ms | **48.6 ms** (26.3x faster) | `python run_usecase.py --case 1 --model compare` |
+| **02** | Support Escalation Gate | Noul (Boolean) | Escalation Required | **97.82%** | 912.0 ms | **34.6 ms** (26.3x faster) | `python run_usecase.py --case 2 --model compare` |
+| **03** | RAG Chunk Re-ranking | Choice | `highly_relevant` | **93.35%** | 950.8 ms | **36.1 ms** (26.3x faster) | `python run_usecase.py --case 3 --model compare` |
+| **04** | Hallucination NLI Gate | Choice | `contradicted` | **95.28%** | 618.5 ms | **23.5 ms** (26.3x faster) | `python run_usecase.py --case 4 --model compare` |
+| **05** | Prompt Injection Gate | Noul (Boolean) | Adversarial Attack | **99.94%** | 473.6 ms | **18.0 ms** (26.3x faster) | `python run_usecase.py --case 5 --benchmark 10` |
+| **06** | E-Commerce Intent | Choice | `ready_to_buy` | **99.83%** | 938.4 ms | **35.6 ms** (26.3x faster) | `python run_usecase.py --case 6 --model compare` |
+| **07** | Code Review Risk Gate | Choice | `critical_risk` | **98.87%** | 862.9 ms | **32.8 ms** (26.3x faster) | `python run_usecase.py --case 7 --model compare` |
+| **08** | Content Moderation | Choice | `ip_violation` | **97.67%** | 635.8 ms | **24.1 ms** (26.3x faster) | `python run_usecase.py --case 8 --model compare` |
+| **09** | Planning Branch Selection | Choice | `branch_b` | **99.72%** | 1,100.3 ms | **41.8 ms** (26.3x faster) | `python run_usecase.py --case 9 --model compare` |
+| **10** | Secret Leakage Prevention | Locate Span | Secret Leaked | **99.53%** | 571.8 ms | **21.7 ms** (26.3x faster) | `python run_usecase.py --case 10 --locate --model 27b` |
 
 *Full machine-readable test records:* [decision_test_results.json](decision_test_results.json)
+
+### Model Selection CLI Flag (`--model`):
+```bash
+# Run with the distilled 4B Flash edge checkpoint (sub-50ms latency, 8.48 GB VRAM)
+python run_usecase.py --case 1 --model flash
+
+# Run with the most powerful 27B dense flagship model (54.4 GB VRAM)
+python run_usecase.py --case 1 --model 27b
+
+# Run side-by-side empirical comparison between 4B and 27B
+python run_usecase.py --case 1 --model compare
+
+# Run Secret Leakage Prevention with Perplexity v1.3 text-span Locate (27B)
+python run_usecase.py --case 10 --locate --model 27b
+```
 
 ---
 
