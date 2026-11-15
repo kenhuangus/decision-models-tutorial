@@ -15,7 +15,7 @@
 
 <!-- Top Navigation Bar -->
 <header class="bar">
-  <a class="bar__brand" href="#1"><span class="bar__logo">◆</span> DECISION MODELS</a>
+  <a class="bar__brand" href="#1"><span class="bar__logo">◆</span> DECISION MODELS <span style="font-size:0.75rem;opacity:0.85;font-weight:500;margin-left:0.5rem;color:var(--accent);">Perplexity pplx-decider</span></a>
   <span class="bar__title" id="slideTitle"></span>
   <div class="bar__actions">
     <button class="bar__btn" id="fsBtn" aria-label="Toggle Fullscreen (F)" title="Toggle Fullscreen (F)">
@@ -40,7 +40,7 @@
       <span class="eyebrow">AI Agent Architecture · Systems Engineering</span>
       <h1 class="hero__title">DECISION MODELS</h1>
       <p class="hero__acronym"><b>Calibrated</b> Probabilities · <b>Zero</b> Hallucination · <b>Non-Causal</b> Readout</p>
-      <p class="hero__sub">The <strong>Deterministic Policy &amp; Routing Engine</strong> for Modern AI Agents</p>
+      <p class="hero__sub">Featuring <strong>Perplexity's Decision Model Family</strong> (<code>pplx-decider-v1.1-27b</code> &amp; <code>pplx-decider-flash-v1.2</code>)<br/>The <strong>Deterministic Policy &amp; Routing Engine</strong> for Modern AI Agents</p>
       <p class="hero__by">Presented by <strong>Ken Huang, CISSP</strong><br/>Adjunct Professor, University of San Francisco (USF) · CEO, DistributedApps.ai</p>
     </div>
   </section>
@@ -182,9 +182,9 @@
   <!-- ============ SLIDE 5 · INSIDE PPLX-DECIDER ============ -->
   <section class="slide" data-title="Anatomy of pplx-decider">
     <div class="slide__in">
-      <span class="kicker">Model Deep Dive</span>
-      <h2 class="h2">Inside Perplexity's Decision Model Family</h2>
-      <p class="lead">Built on Qwen transformer backbones, fine-tuned specifically for discrete decision-making, classification, and calibrated scoring.</p>
+      <span class="kicker">Perplexity Model Architecture</span>
+      <h2 class="h2">Inside Perplexity's Decision Model Family (pplx-decider)</h2>
+      <p class="lead">Developed by Perplexity AI on top of Qwen transformer backbones, fine-tuned specifically for discrete decision-making, non-causal routing, and mathematically calibrated scoring.</p>
       <div class="grid-3">
         <div class="card card--accent">
           <h3 class="h3">Architectural Specs</h3>
@@ -233,8 +233,8 @@ question = {
   <!-- ============ SLIDE 6 · LIVE MAC MINI BENCHMARK ============ -->
   <section class="slide slide--alt" data-title="Mac Mini Metal MPS Deployment">
     <div class="slide__in">
-      <span class="kicker">Physical Deployment Verification</span>
-      <h2 class="h2">Live Deployment on Mac Mini (Apple Silicon MPS)</h2>
+      <span class="kicker">Physical Hardware Deployment</span>
+      <h2 class="h2">Deploying Perplexity pplx-decider on Apple Silicon MPS</h2>
       <p class="lead">Verified live on an Apple Silicon node: 64GB Unified RAM, running Darwin Kernel 27.0.0 via PyTorch Metal (MPS) acceleration.</p>
       <div class="grid-2">
         <div class="card card--dark">
@@ -1063,7 +1063,7 @@ workflow.add_conditional_edges(<span class="code-hl-str">"supervisor"</span>, de
   <section class="slide slide--alt" data-title="Fine-Tuning: Parameter Isolation Strategy">
     <div class="slide__in">
       <span class="kicker">Model Adaptation</span>
-      <h2 class="h2">Fine-Tuning Decision Models: Architecture &amp; Parameter Isolation</h2>
+      <h2 class="h2">Fine-Tuning Perplexity pplx-decider: Architecture &amp; Parameter Isolation</h2>
       <p class="lead">Adapting general-purpose decision models to proprietary enterprise ontologies without catastrophic forgetting or high GPU memory overhead.</p>
       <div class="grid-3" style="margin-top:1.0vh;">
         <div class="card card--accent">
@@ -1410,7 +1410,7 @@ save_file({<span class="code-hl-str">"weight"</span>: decider.readout.weight.cpu
         <div class="card card--dark">
           <h3 class="h3" style="color:var(--accent-2);">Reference Resources</h3>
           <ul style="padding-left:1.1rem;margin:.5rem 0;font-size:.92rem;line-height:1.8;">
-            <li><strong>Hugging Face Model:</strong> <a class="link" href="https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b" target="_blank" rel="noopener">perplexity-ai/pplx-decider-v1.1-27b ↗</a></li>
+            <li><strong>Perplexity Flagship Model:</strong> <a class="link" href="https://huggingface.co/perplexity-ai/pplx-decider-v1.1-27b" target="_blank" rel="noopener">Perplexity pplx-decider-v1.1-27b on Hugging Face ↗</a></li>
             <li><strong>Fast Distilled Checkpoint:</strong> <a class="link" href="https://huggingface.co/perplexity-ai/pplx-decider-flash-v1.2" target="_blank" rel="noopener">perplexity-ai/pplx-decider-flash-v1.2 ↗</a></li>
             <li><strong>DistributedApps.ai:</strong> <a class="link" href="https://distributedapps.ai/" target="_blank" rel="noopener">distributedapps.ai ↗</a></li>
             <li><strong>MAESTRO Sentinel:</strong> <a class="link" href="https://maestro-sentinel.com/" target="_blank" rel="noopener">maestro-sentinel.com ↗</a></li>
