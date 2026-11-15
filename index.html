@@ -268,11 +268,71 @@ question = {
     </div>
   </section>
 
-  <!-- ============ SLIDE 7 · USE CASE 1 ============ -->
+  
+  <!-- ============ SLIDE 7 · STUDENT ENVIRONMENT SETUP & RUNBOOK ============ -->
+  <section class="slide" data-title="Student Environment Setup &amp; Runbook">
+    <div class="slide__in">
+      <span class="kicker">Hands-On Laboratory Setup</span>
+      <h2 class="h2">Student Environment Setup &amp; Reproduction Runbook</h2>
+      <p class="lead">Step-by-step instructions for deploying Perplexity decision models and reproducing all 10 use cases on local hardware.</p>
+      <div class="grid-3" style="margin-top:0.8vh;">
+        <div class="card card--dark">
+          <h3 class="h3" style="color:var(--accent-2);">1. System Requirements</h3>
+          <ul style="padding-left:1.1rem;margin:.3rem 0;font-size:.85rem;line-height:1.6;color:#cbd5e1;">
+            <li><strong>OS:</strong> macOS 14+ (Metal MPS), Linux (CUDA 12+), or Windows (WSL2/CUDA)</li>
+            <li><strong>Python:</strong> Python 3.10 – 3.12 64-bit</li>
+            <li><strong>RAM:</strong> 16 GB for <code>flash-v1.2</code>; 64 GB for <code>v1.1-27b</code></li>
+            <li><strong>Disk:</strong> 10 GiB NVMe free space</li>
+          </ul>
+          <p style="font-size:.82rem;color:var(--muted);margin-top:.4rem;">
+            Both Apple Silicon unified memory and standard NVIDIA GPUs are natively supported.
+          </p>
+        </div>
+        <div class="card card--accent">
+          <h3 class="h3" style="color:var(--accent);">2. Install &amp; Verify MPS</h3>
+          <div class="code-box">
+            <code>
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install PyTorch &amp; transformers
+pip install torch torchvision \
+  transformers huggingface_hub \
+  safetensors accelerate
+
+# Verify hardware acceleration
+python3 -c "import torch; print('MPS Active:', torch.backends.mps.is_available())"
+            </code>
+          </div>
+        </div>
+        <div class="card card--green">
+          <h3 class="h3" style="color:var(--green);">3. Clone &amp; Run Use Cases</h3>
+          <div class="code-box">
+            <code>
+# Clone hands-on repository
+git clone https://github.com/kenhuangus/decision-models-tutorial.git
+cd decision-models-tutorial
+
+# Execute specific use case
+python run_usecase.py --case 1  # Tool Routing
+python run_usecase.py --case 5  # Prompt Injection
+
+# Execute full test suite
+python run_usecase.py --all
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 8 · USE CASE 1 ============ -->
   <section class="slide" data-title="Use Case 1 · AI Agent Tool Selection">
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 01</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 1</span>
         <span class="tag tag--teal">SCHEMA: CHOICE</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -339,6 +399,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 02</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 2</span>
         <span class="tag tag--orange">SCHEMA: NOUL</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -395,6 +456,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 03</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 3</span>
         <span class="tag tag--teal">SCHEMA: CHOICE</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -462,6 +524,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 04</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 4</span>
         <span class="tag tag--violet">SCHEMA: CHOICE</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -529,6 +592,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 05</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 5</span>
         <span class="tag tag--red">SECURITY GATEWAY</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -585,6 +649,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 06</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 6</span>
         <span class="tag tag--green">COMMERCIAL CONVERSION</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -651,6 +716,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 07</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 7</span>
         <span class="tag tag--violet">CI/CD GATE</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -719,6 +785,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 08</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 8</span>
         <span class="tag tag--teal">COMPLIANCE</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -787,6 +854,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 09</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 9</span>
         <span class="tag tag--orange">TREE-OF-THOUGHTS</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
@@ -857,6 +925,7 @@ question = {
     <div class="slide__in">
       <div class="usecase-meta">
         <span class="tag tag--blue">USE CASE 10</span>
+        <span class="tag tag--orange" style="font-family:'Fira Code', monospace;font-size:0.75rem;">RUN: python run_usecase.py --case 10</span>
         <span class="tag tag--red">EGRESS GUARDRAIL</span>
         <span class="tag tag--green">LIVE METAL MPS RESULT</span>
       </div>
