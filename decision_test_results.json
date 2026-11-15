@@ -1,0 +1,226 @@
+[
+  {
+    "id": 1,
+    "name": "AI Agent Tool Selection & Routing",
+    "latency_ms": 1279.8,
+    "response": {
+      "answers": {
+        "tool": {
+          "type": "choice",
+          "probabilities": {
+            "chart_generator": 0.7565327200409716,
+            "market_data_api": 0.21936171996669745,
+            "file_exporter": 0.02089235162741383,
+            "general_knowledge": 0.0032132083649171494
+          },
+          "choice": "chart_generator",
+          "confidence": 0.6753769600546288
+        }
+      },
+      "usage": {
+        "input_tokens": 181,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 2,
+    "name": "Customer Support Escalation Gate",
+    "latency_ms": 912.0,
+    "response": {
+      "answers": {
+        "escalate": {
+          "type": "noul",
+          "noul": 0.9781903720856349
+        }
+      },
+      "usage": {
+        "input_tokens": 133,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 3,
+    "name": "RAG Retrieval Chunk Re-ranking",
+    "latency_ms": 950.8,
+    "response": {
+      "answers": {
+        "relevance": {
+          "type": "choice",
+          "probabilities": {
+            "highly_relevant": 0.9334701334441831,
+            "partially_relevant": 0.056144148320496634,
+            "irrelevant": 0.010385718235320293
+          },
+          "choice": "highly_relevant",
+          "confidence": 0.9002052001662746
+        }
+      },
+      "usage": {
+        "input_tokens": 196,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 4,
+    "name": "Hallucination Verification / Factuality Checking",
+    "latency_ms": 618.5,
+    "response": {
+      "answers": {
+        "verification": {
+          "type": "choice",
+          "probabilities": {
+            "contradicted": 0.9527680162470935,
+            "neutral": 0.04337178118169945,
+            "entailed": 0.0038602025712070674
+          },
+          "choice": "contradicted",
+          "confidence": 0.9291520243706403
+        }
+      },
+      "usage": {
+        "input_tokens": 186,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 5,
+    "name": "Prompt Injection & Adversarial Attack Gate",
+    "latency_ms": 473.6,
+    "response": {
+      "answers": {
+        "injection": {
+          "type": "noul",
+          "noul": 0.9993997194342968
+        }
+      },
+      "usage": {
+        "input_tokens": 121,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 6,
+    "name": "E-Commerce Intent & Conversion Readiness",
+    "latency_ms": 938.4,
+    "response": {
+      "answers": {
+        "intent": {
+          "type": "choice",
+          "probabilities": {
+            "ready_to_buy": 0.9982687690436558,
+            "casual_research": 0.0007497797829464165,
+            "support_inquiry": 0.0009814511733978125
+          },
+          "choice": "ready_to_buy",
+          "confidence": 0.9974031535654837
+        }
+      },
+      "usage": {
+        "input_tokens": 174,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 7,
+    "name": "Code Review & Deployment Risk Gate",
+    "latency_ms": 862.9,
+    "response": {
+      "answers": {
+        "risk": {
+          "type": "choice",
+          "probabilities": {
+            "critical_risk": 0.9886520343819535,
+            "moderate_risk": 0.006786551681566374,
+            "low_risk": 0.004561413936480187
+          },
+          "choice": "critical_risk",
+          "confidence": 0.9829780515729301
+        }
+      },
+      "usage": {
+        "input_tokens": 204,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 8,
+    "name": "Multi-Class Content Moderation",
+    "latency_ms": 635.8,
+    "response": {
+      "answers": {
+        "category": {
+          "type": "choice",
+          "probabilities": {
+            "ip_violation": 0.976712908898177,
+            "harassment": 0.0013809192832993896,
+            "spam": 0.019416180032369886,
+            "benign": 0.0024899917861537653
+          },
+          "choice": "ip_violation",
+          "confidence": 0.9689505451975693
+        }
+      },
+      "usage": {
+        "input_tokens": 168,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 9,
+    "name": "Agentic Planning / Branch Selection",
+    "latency_ms": 1100.3,
+    "response": {
+      "answers": {
+        "branch": {
+          "type": "choice",
+          "probabilities": {
+            "branch_b": 0.9972444470874551,
+            "branch_a": 0.0017110227554959809,
+            "branch_c": 0.0010445301570489722
+          },
+          "choice": "branch_b",
+          "confidence": 0.9958666706311826
+        }
+      },
+      "usage": {
+        "input_tokens": 216,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  },
+  {
+    "id": 10,
+    "name": "Sensitive Secret Leakage Prevention",
+    "latency_ms": 571.8,
+    "response": {
+      "answers": {
+        "secret": {
+          "type": "noul",
+          "noul": 0.9953411391138169
+        }
+      },
+      "usage": {
+        "input_tokens": 140,
+        "output_tokens": 0,
+        "sequences": 1
+      }
+    }
+  }
+]

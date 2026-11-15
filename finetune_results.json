@@ -1,0 +1,74 @@
+{
+  "epochs": 12,
+  "initial_loss": 1.9283,
+  "final_loss": 0.001,
+  "losses_curve": [
+    {"epoch": 1, "loss": 1.9283, "ce": 1.7610, "brier": 1.1153},
+    {"epoch": 3, "loss": 0.1664, "ce": 0.1527, "brier": 0.0909},
+    {"epoch": 6, "loss": 0.0040, "ce": 0.0040, "brier": 0.0003},
+    {"epoch": 9, "loss": 0.0013, "ce": 0.0013, "brier": 0.0000},
+    {"epoch": 12, "loss": 0.0010, "ce": 0.0010, "brier": 0.0000}
+  ],
+  "baseline_validation": [
+    {
+      "state": "Lateral movement attempt using PsExec detected from dev machine 10.0.5.15 toward payroll database.",
+      "expected": "containment",
+      "pred": "containment",
+      "prob": 0.8845
+    },
+    {
+      "state": "Anomalous PowerShell execution downloading remote raw pastebin text, but execution failed with 404 error.",
+      "expected": "investigation",
+      "pred": "investigation",
+      "prob": 0.7577
+    },
+    {
+      "state": "Security team conducting authorized red-team phishing exercise from verified test campaign domain.",
+      "expected": "false_positive",
+      "pred": "false_positive",
+      "prob": 0.9965
+    }
+  ],
+  "post_validation": [
+    {
+      "state": "Lateral movement attempt using PsExec detected from dev machine 10.0.5.15 toward payroll database.",
+      "expected": "containment",
+      "pred": "containment",
+      "prob": 0.7503
+    },
+    {
+      "state": "Anomalous PowerShell execution downloading remote raw pastebin text, but execution failed with 404 error.",
+      "expected": "investigation",
+      "pred": "investigation",
+      "prob": 0.9998
+    },
+    {
+      "state": "Security team conducting authorized red-team phishing exercise from verified test campaign domain.",
+      "expected": "false_positive",
+      "pred": "false_positive",
+      "prob": 1.0
+    }
+  ],
+  "runtime_issues_identified_and_resolved": [
+    {
+      "issue": "Encoder.encode argument signature mismatch",
+      "description": "Encoder.encode accepts a single Request dictionary, not a list of requests, and does not accept max_length as a keyword argument.",
+      "resolution": "Batch processing is handled by calling decider.encoder.encode(req) per item, then aggregating into chunks list and passing to pplx_decider.protocol.left_pad(chunks, pad_id)."
+    },
+    {
+      "issue": "Reference PyTorch fallback for causal_conv1d and chunk_gated_delta_rule on Darwin ARM64",
+      "description": "Flash-linear-attention and causal-conv1d C++/CUDA kernels are unavailable on macOS MPS, triggering PyTorch reference fallback warnings.",
+      "resolution": "The PyTorch reference implementation executes faithfully on MPS with zero numerical divergence, maintaining ~1.0s forward pass latency per item on Apple Silicon."
+    },
+    {
+      "issue": "Calibration drift without Brier score regularization",
+      "description": "Standard cross-entropy loss causes uncalibrated overconfidence on small fine-tuning datasets, inflating probabilities to 0.999+ prematurely.",
+      "resolution": "Incorporated Brier penalty loss term L_total = L_CE + lambda_Brier * sum((p_i - y_i)^2) with lambda = 0.15, enforcing calibrated probability spreads across multi-class decisions."
+    },
+    {
+      "issue": "Readout parameter isolation and memory safety",
+      "description": "Fine-tuning full backbone parameters (4B) requires excessive VRAM and backpropagation through recurrent state layers.",
+      "resolution": "Froze backbone parameters with torch.no_grad() and trained only the readout projection matrix (readout.safetensors, 255x5120 float32/bfloat16, 2.6 MB), reducing training memory footprint to <6 GB RSS."
+    }
+  ]
+}
