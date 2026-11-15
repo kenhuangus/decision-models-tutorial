@@ -44,7 +44,7 @@
       <span class="eyebrow">Perplexity AI · AI Agent Architecture · Systems Engineering</span>
       <h1 class="hero__title">DECISION MODEL WITH PERPLEXITY</h1>
       <p class="hero__acronym"><b>Calibrated</b> Probabilities · <b>Zero</b> Hallucination · <b>Non-Causal</b> Readout</p>
-      <p class="hero__sub">Featuring <strong>Perplexity's Decision Model Family</strong> (<code>pplx-decider-v1.3</code>, <code>v1.1-27b</code>, &amp; <code>flash-v1.2</code>)<br/>The <strong>Deterministic Policy &amp; Routing Engine</strong> for Modern AI Agents</p>
+      <p class="hero__sub">Featuring <strong>Perplexity's Decision Model Family</strong><br/>The <strong>Deterministic Policy &amp; Routing Engine</strong> for Modern AI Agents<br/><span style="display:inline-block;margin-top:.4vh;font-size:.92rem;color:var(--text);background:#eff6ff;padding:.2rem .8rem;border-radius:999px;border:1px solid #bfdbfe;"><strong>Exact Deployed Lab Models:</strong> <code>perplexity-ai/pplx-decider-v1.1-27b</code> (Flagship) &amp; <code>pplx-decider-flash-v1.2</code> (Mac Mini MPS)</span></p>
       <p class="hero__by">Presented by <strong>Ken Huang, CISSP</strong><br/>Adjunct Professor, University of San Francisco (USF) · CEO, DistributedApps.ai</p>
     </div>
   </section>
@@ -187,7 +187,9 @@
     <div class="slide__in">
       <span class="kicker">Model Deep Dive</span>
       <h2 class="h2">Inside Perplexity's Decision Model Family (pplx-decider)</h2>
-      <p class="lead">Perplexity AI released open-weight decision models optimized specifically for deterministic agent routing, policy gating, and verification.</p>
+      <div class="cli-box" style="margin-bottom:.5vh;border-left:4px solid var(--green);background:var(--green-light);">
+        <strong>EXACT MODELS DEPLOYED IN THIS TUTORIAL:</strong> Primary Flagship: <code>perplexity-ai/pplx-decider-v1.1-27b</code> (27B Dense) | Live Mac Mini MPS Node: <code>perplexity-ai/pplx-decider-flash-v1.2</code> (4B Distilled)
+      </div>
       <div class="grid-3">
         <div class="card card--accent">
           <h3 class="h3">pplx-decider-v1.3</h3>
@@ -362,9 +364,12 @@ pip install huggingface_hub[cli] hf_transfer
 huggingface-cli login --token $HF_TOKEN
 export HF_HUB_ENABLE_HF_TRANSFER=1
 
-<span class="code-hl-comm"># 2. Download Perplexity Decider v1.3 (27B) or Flash (4B)</span>
-huggingface-cli download perplexity-ai/pplx-decider-v1.3 \
-  --local-dir ./models/pplx-decider-v1.3 --local-dir-use-symlinks False
+<span class="code-hl-comm"># 2. Download the EXACT Models Deployed in this Tutorial:</span>
+<span class="code-hl-comm"># A. Flagship 27B Model (pplx-decider-v1.1-27b)</span>
+huggingface-cli download perplexity-ai/pplx-decider-v1.1-27b \
+  --local-dir ./models/pplx-decider-v1.1-27b --local-dir-use-symlinks False
+
+<span class="code-hl-comm"># B. High-Speed Edge Model Deployed on Mac Mini MPS (flash-v1.2)</span>
 huggingface-cli download perplexity-ai/pplx-decider-flash-v1.2 \
   --local-dir ./models/pplx-decider-flash-v1.2 --local-dir-use-symlinks False
             </code>
@@ -530,7 +535,7 @@ rm -rf ~/.cache/huggingface/hub/tmp*
           </p>
           <div class="code-box">
             <code>
-<span class="code-hl-comm"># Run single decision gate on Apple Silicon MPS</span>
+<span class="code-hl-comm"># Run Use Case 1 using deployed model (pplx-decider-flash-v1.2 / v1.1-27b)</span>
 python run_usecase.py --case 1 --device mps --format table
 
 <span class="code-hl-comm"># Run with custom confidence threshold on CUDA GPU</span>
@@ -768,7 +773,7 @@ python run_usecase.py --all --device mps
           <h3 class="h3">Port Allocation &amp; Service Mapping</h3>
           <div class="cli-box">
 Port 8000: Core REST Decision API (/v1/decide, /v1/locate)
-Port 8001: Internal Health &amp; Liveness Probes (/v1/health)
+Port 8001: Internal Health (/v1/health -> returns model: "pplx-decider-v1.1-27b")
 Port 9090: Prometheus Observability Metrics (/v1/metrics)
 Unix Socket: /tmp/decider.sock (Zero-latency IPC on same host)
           </div>
