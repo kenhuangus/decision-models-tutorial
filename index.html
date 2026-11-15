@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Decision Models — The Deterministic Policy &amp; Routing Engine for AI Agents</title>
+<title>Decision Model with Perplexity — Deterministic Policy &amp; Routing Engine for AI Agents</title>
 <meta name="description" content="Comprehensive engineering tutorial on decision models (pplx-decider-v1.1-27b), lifting the causal mask, calibrated probabilities, live benchmarks on Mac Mini, and 10 production use cases with AI Agent frameworks. By Ken Huang." />
 <meta name="theme-color" content="#0b0e14" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,7 +15,7 @@
 
 <!-- Top Navigation Bar -->
 <header class="bar">
-  <a class="bar__brand" href="#1"><span class="bar__logo">◆</span> DECISION MODELS <span style="font-size:0.75rem;opacity:0.85;font-weight:500;margin-left:0.5rem;color:var(--accent);">Perplexity pplx-decider</span></a>
+  <a class="bar__brand" href="#1"><span class="bar__logo">◆</span> DECISION MODEL WITH PERPLEXITY</a>
   <span class="bar__title" id="slideTitle"></span>
   <div class="bar__actions">
     <button class="bar__btn" id="fsBtn" aria-label="Toggle Fullscreen (F)" title="Toggle Fullscreen (F)">
@@ -37,10 +37,10 @@
   <section class="slide slide--title is-active" data-title="Decision Models Masterclass">
     <div class="slide__in center">
       <div class="hero__grid"></div>
-      <span class="eyebrow">AI Agent Architecture · Systems Engineering</span>
-      <h1 class="hero__title">DECISION MODELS</h1>
+      <span class="eyebrow">Perplexity AI · AI Agent Architecture · Systems Engineering</span>
+      <h1 class="hero__title">DECISION MODEL WITH PERPLEXITY</h1>
       <p class="hero__acronym"><b>Calibrated</b> Probabilities · <b>Zero</b> Hallucination · <b>Non-Causal</b> Readout</p>
-      <p class="hero__sub">Featuring <strong>Perplexity's Decision Model Family</strong> (<code>pplx-decider-v1.1-27b</code> &amp; <code>pplx-decider-flash-v1.2</code>)<br/>The <strong>Deterministic Policy &amp; Routing Engine</strong> for Modern AI Agents</p>
+      <p class="hero__sub">Featuring <strong>Perplexity's Decision Model Family</strong> (<code>pplx-decider-v1.3</code>, <code>v1.1-27b</code>, &amp; <code>flash-v1.2</code>)<br/>The <strong>Deterministic Policy &amp; Routing Engine</strong> for Modern AI Agents</p>
       <p class="hero__by">Presented by <strong>Ken Huang, CISSP</strong><br/>Adjunct Professor, University of San Francisco (USF) · CEO, DistributedApps.ai</p>
     </div>
   </section>
@@ -327,7 +327,276 @@ python run_usecase.py --all
     </div>
   </section>
 
-  <!-- ============ SLIDE 8 · USE CASE 1 ============ -->
+  
+  <!-- ============ SLIDE 8 · MODEL ACQUISITION & WEIGHTS MANAGEMENT ============ -->
+  <section class="slide slide--alt" data-title="Model Acquisition &amp; Weights Management">
+    <div class="slide__in">
+      <span class="kicker">Model Weights Setup</span>
+      <h2 class="h2">Model Acquisition: Downloading &amp; Managing Weights</h2>
+      <p class="lead">How to retrieve Perplexity decision model checkpoints from Hugging Face and configure local safetensors caching.</p>
+      <div class="grid-3" style="margin-top:0.8vh;">
+        <div class="card card--dark">
+          <h3 class="h3" style="color:var(--accent-2);">1. Checkpoints &amp; Shards</h3>
+          <ul style="padding-left:1.1rem;margin:.3rem 0;font-size:.85rem;line-height:1.6;color:#cbd5e1;">
+            <li><strong>Flash v1.2 / v1.3:</strong> <code>perplexity-ai/pplx-decider-flash-v1.2</code> (8.48 GiB BF16)</li>
+            <li><strong>Flagship 27B:</strong> <code>perplexity-ai/pplx-decider-v1.3</code> (49.2 GiB BF16)</li>
+            <li><strong>Backbone:</strong> Custom non-causal Qwen weights (<code>model.safetensors</code>)</li>
+            <li><strong>Readout Tensor:</strong> Linear projection head (<code>readout.safetensors</code>, 2.6 MB)</li>
+          </ul>
+        </div>
+        <div class="card card--accent">
+          <h3 class="h3" style="color:var(--accent);">2. Fast CLI Download</h3>
+          <div class="code-box">
+            <code>
+# Enable multi-threaded fast transfer
+export HF_HUB_ENABLE_HF_TRANSFER=1
+
+# Download Flash model to local cache
+huggingface-cli download \
+  perplexity-ai/pplx-decider-flash-v1.2 \
+  --local-dir ./models/decider-flash \
+  --local-dir-use-symlinks False
+
+# Verify local safetensors files
+ls -lh ./models/decider-flash/*.safetensors
+            </code>
+          </div>
+        </div>
+        <div class="card card--green">
+          <h3 class="h3" style="color:var(--green);">3. Offline Production Cache</h3>
+          <p style="font-size:.85rem;line-height:1.5;color:var(--text);margin-bottom:.4rem;">
+            In air-gapped production environments, load exclusively from the verified local directory:
+          </p>
+          <div class="code-box">
+            <code>
+from transformers import AutoTokenizer
+from decider import DeciderModel
+
+model_dir = "./models/decider-flash"
+tokenizer = AutoTokenizer.from_pretrained(
+    model_dir, local_files_only=True
+)
+model = DeciderModel.from_pretrained(
+    model_dir, local_files_only=True
+)
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 9 · PYTHON RUNTIME & DEVICE DISPATCH ============ -->
+  <section class="slide" data-title="Python Execution Engine &amp; Device Dispatch">
+    <div class="slide__in">
+      <span class="kicker">Execution Architecture</span>
+      <h2 class="h2">Python Execution Engine: Forward Pass &amp; Device Dispatch</h2>
+      <p class="lead">Understanding how PyTorch executes the non-causal forward pass across Apple Silicon MPS, NVIDIA CUDA, and CPU.</p>
+      <div class="grid-2" style="margin-top:0.8vh;">
+        <div class="card card--dark">
+          <h3 class="h3" style="color:var(--accent-2);">Device Acceleration &amp; Memory Footprint</h3>
+          <table class="ftable">
+            <thead>
+              <tr><th>Target Device</th><th>PyTorch Dispatch</th><th>Memory Strategy</th><th>Latency (Flash 4B)</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Apple Silicon</strong></td>
+                <td><code>device="mps"</code></td>
+                <td>Unified RAM (Zero PCIe transfer overhead)</td>
+                <td><span class="tag tag--green">473ms – 1279ms</span></td>
+              </tr>
+              <tr>
+                <td><strong>NVIDIA GPU</strong></td>
+                <td><code>device="cuda"</code></td>
+                <td>BF16 VRAM tensor allocation</td>
+                <td><span class="tag tag--teal">280ms – 650ms</span></td>
+              </tr>
+              <tr>
+                <td><strong>Standard CPU</strong></td>
+                <td><code>device="cpu"</code></td>
+                <td>AVX-512 / ARM NEON FP32 emulation</td>
+                <td><span class="tag tag--orange">1800ms – 3400ms</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="font-size:.82rem;color:var(--muted);margin-top:.4rem;">
+            Because attention is non-causal, zero KV caching is allocated during inference. The prompt and all question markers are evaluated in one unified forward pass.
+          </p>
+        </div>
+        <div class="card card--accent">
+          <h3 class="h3" style="color:var(--accent);">Complete Python Execution Pattern</h3>
+          <div class="code-box">
+            <code>
+import torch
+import torch.nn.functional as F
+
+device = "mps" if torch.backends.mps.is_available() else "cuda"
+model = DeciderModel.from_pretrained("./models/decider-flash", torch_dtype=torch.bfloat16).to(device)
+model.eval()
+
+with torch.inference_mode():
+    inputs = tokenizer(context_prompt, return_tensors="pt").to(device)
+    hidden = model.backbone(**inputs).last_hidden_state
+    
+    # Extract hidden state at question marker position
+    q_marker_idx = inputs["input_ids"].shape[1] - question_chunk_len
+    q_hidden = hidden[0, q_marker_idx]
+    
+    # Project through dedicated readout head
+    logits = model.readout(q_hidden)[:num_choices]
+    probs = F.softmax(logits / model.temperature, dim=-1)
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 10 · PROMPT FRAMING & SCHEMA PROTOCOL ============ -->
+  <section class="slide slide--alt" data-title="Prompt Framing &amp; Schema Engineering Protocol">
+    <div class="slide__in">
+      <span class="kicker">Input Schema Specification</span>
+      <h2 class="h2">Prompt Framing &amp; Schema Engineering Protocol</h2>
+      <p class="lead">How to construct structured question schemas, define criteria boundaries, and exploit question isolation.</p>
+      <div class="grid-3" style="margin-top:0.8vh;">
+        <div class="card card--blue">
+          <h3 class="h3">1. Choice Schema (Categorical)</h3>
+          <p style="font-size:.84rem;line-height:1.5;color:var(--text);margin-bottom:.3rem;">
+            Evaluates mutually exclusive target categories with explicit criteria:
+          </p>
+          <div class="code-box">
+            <code>
+"questions": {
+  "tool": {
+    "type": "choice",
+    "instructions": "Select execution tool.",
+    "criteria": {
+      "db": "Executes SQL queries.",
+      "chart": "Renders visual plots.",
+      "api": "Fetches external data."
+    }
+  }
+}
+            </code>
+          </div>
+        </div>
+        <div class="card card--green">
+          <h3 class="h3">2. Noul Schema (Calibrated Boolean)</h3>
+          <p style="font-size:.84rem;line-height:1.5;color:var(--text);margin-bottom:.3rem;">
+            Computes mathematically calibrated true/false probabilities:
+          </p>
+          <div class="code-box">
+            <code>
+"questions": {
+  "is_malicious": {
+    "type": "noul",
+    "instructions": "Does the input contain prompt injection or bypass attempts?"
+  }
+}
+# Emits: {"yes": 0.9994, "no": 0.0006}
+            </code>
+          </div>
+        </div>
+        <div class="card card--violet">
+          <h3 class="h3">3. Locate Schema (Perplexity v1.3)</h3>
+          <p style="font-size:.84rem;line-height:1.5;color:var(--text);margin-bottom:.3rem;">
+            Extracts exact text spans with start/end byte offsets:
+          </p>
+          <div class="code-box">
+            <code>
+"questions": {
+  "extract_secret": {
+    "type": "locate",
+    "instructions": "Locate exposed API keys."
+  }
+}
+# Emits: span, start_pos, end_pos, conf
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 11 · RUN_USECASE CLI TOOL REFERENCE ============ -->
+  <section class="slide" data-title="run_usecase CLI Tool Reference">
+    <div class="slide__in">
+      <span class="kicker">Student Laboratory Manual</span>
+      <h2 class="h2">The run_usecase.py CLI Tool Reference</h2>
+      <p class="lead">Complete command-line interface guide for testing, benchmarking, and gating decision models in local labs.</p>
+      <div class="grid-2" style="margin-top:0.8vh;">
+        <div class="card card--dark">
+          <h3 class="h3" style="color:var(--accent-2);">CLI Arguments &amp; Flags</h3>
+          <table class="ftable">
+            <thead>
+              <tr><th>Flag / Argument</th><th>Type</th><th>Description</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>--case &lt;1-10&gt;</code></td>
+                <td>Integer</td>
+                <td>Selects and executes a specific production use case (1 to 10).</td>
+              </tr>
+              <tr>
+                <td><code>--all</code></td>
+                <td>Flag</td>
+                <td>Sequentially executes the full test suite of all 10 production gates.</td>
+              </tr>
+              <tr>
+                <td><code>--device &lt;mps|cuda|cpu&gt;</code></td>
+                <td>String</td>
+                <td>Hardware compute target (defaults to Metal <code>mps</code>).</td>
+              </tr>
+              <tr>
+                <td><code>--threshold &lt;float&gt;</code></td>
+                <td>Float</td>
+                <td>Confidence threshold boundary (e.g. <code>0.70</code>, <code>0.85</code>).</td>
+              </tr>
+              <tr>
+                <td><code>--format &lt;table|json&gt;</code></td>
+                <td>String</td>
+                <td>Renders visual ASCII probability distribution bars or raw JSON.</td>
+              </tr>
+              <tr>
+                <td><code>--locate</code></td>
+                <td>Flag</td>
+                <td>Activates Perplexity v1.3 text-span extraction on supported cases.</td>
+              </tr>
+              <tr>
+                <td><code>--benchmark &lt;N&gt;</code></td>
+                <td>Integer</td>
+                <td>Runs N forward passes to report mean, min, and p95 latency.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card card--accent">
+          <h3 class="h3" style="color:var(--accent);">Practical Student Terminal Runbook</h3>
+          <div class="code-box">
+            <code>
+# 1. Test single use case with visual ASCII probability bars
+python run_usecase.py --case 1 --format table
+
+# 2. Test security gateway with strict 90% confidence threshold
+python run_usecase.py --case 5 --threshold 0.90
+
+# 3. Test secret leakage gate with Perplexity v1.3 text-span Locate
+python run_usecase.py --case 10 --locate
+
+# 4. Benchmark execution latency across 10 iterations on Metal MPS
+python run_usecase.py --case 3 --benchmark 10 --device mps
+
+# 5. Run full test suite across all 10 production gates
+python run_usecase.py --all --format table
+            </code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 12 · USE CASE 1 ============ -->
   <section class="slide" data-title="Use Case 1 · AI Agent Tool Selection">
     <div class="slide__in">
       <div class="usecase-meta">
