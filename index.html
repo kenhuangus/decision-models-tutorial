@@ -155,24 +155,24 @@
           </p>
         </div>
         <div class="card card--accent">
-          <h3 class="h3" style="color:var(--accent);">Decision Model Architecture (Lifted Mask + Readout)</h3>
+          <h3 class="h3" style="color:var(--accent);">Decision Model Architecture (Lifted Mask + Decision Tokens)</h3>
           <div class="code-box">
             <code>
-[Full Input State] ──► Bi-directional Attention (No Causal Mask)
-                       Every token attends to all other tokens
-                                │
-                                ▼
-                   [Last Hidden Layer Vector (h_L)]
-                                │
-                                ▼
-               [Dedicated Readout Head (BF16 Tensor)]
-                                │
-                                ▼
-            [Calibrated Softmax Probabilities (P_1 ... P_K)]
+[Input Context + Question Markers] ──► Bi-directional Full Attention
+                                       Non-causal cross-attention across all tokens
+                                                │
+                                                ▼
+                                   [Hidden States at Decision Markers]
+                                                │
+                                                ▼
+                                    [Dedicated Readout Head Tensor]
+                                                │
+                                                ▼
+                               [Emits Decision Tokens (P_1 ... P_K)]
             </code>
           </div>
           <p style="font-size:.85rem;color:var(--text);margin-top:.4rem;">
-            Full bi-directional context representation. The output is directly projected onto target choice indices in a single forward pass.
+            Zero autoregressive text tokens are generated. Instead, the model outputs discrete <strong>decision tokens</strong> projected directly from hidden representations at designated question marker positions in a single forward pass.
           </p>
         </div>
       </div>
@@ -193,6 +193,7 @@
             <li><strong>Distilled:</strong> <code>pplx-decider-flash-v1.2</code> (4B params, 8.48 GiB)</li>
             <li><strong>Attention Type:</strong> Non-causal full attention (SDPA)</li>
             <li><strong>Readout Tensor:</strong> <code>readout.safetensors</code> (BF16)</li>
+            <li><strong>Output Token Mode:</strong> Zero text tokens; emits discrete <strong>decision tokens</strong></li>
             <li><strong>Apple Silicon:</strong> Runs natively on Metal Performance Shaders (MPS)</li>
           </ul>
         </div>
@@ -254,12 +255,13 @@ question = {
 [mps-node:metal] Inference Test Run (10 Use Cases)
 - Average Forward Pass Latency: 835.4 ms
 - Minimum Latency: 473.6 ms (Prompt Injection Gate)
-- Total Generated Output Tokens: 0 tokens (Zero-decoding)
+- Generated Output Tokens: 0 text tokens (Zero-decoding)
+- Output Tokens Emitted: Decision Tokens (1 Token per Question)
 - Total Test Cases Passed: 10 / 10 (100% Deterministic)
             </code>
           </div>
           <p style="font-size:.88rem;color:var(--text);margin-top:.4rem;">
-            Every single test below reflects verified tensor outputs executed directly on the Apple Silicon Metal node.
+            While autoregressive text generation is <strong>0 tokens</strong> (zero decoding loop), the model outputs calibrated <strong>decision tokens</strong> directly from the readout tensor at question marker positions.
           </p>
         </div>
       </div>
@@ -319,13 +321,13 @@ question = {
       "confidence": <span class="code-hl-num">0.6754</span>
     }
   },
-  "usage": { "input_tokens": 181, "output_tokens": 0 }
+  "usage": { "input_tokens": 181, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 1,279.8ms · Output Tokens: 0.</strong> Evaluator selects <code>chart_generator</code>. Because <code>market_data_api</code> is &gt;0.20, the agent automatically chains it as upstream data feeder.
+            <strong>Latency: 1,279.8ms · Text Tokens: 0 · Decision Tokens: 1.</strong> Evaluator selects <code>chart_generator</code>. Because <code>market_data_api</code> is &gt;0.20, the agent automatically chains it as upstream data feeder.
           </div>
         </div>
       </div>
@@ -375,13 +377,13 @@ question = {
       "noul": <span class="code-hl-num">0.9781903720856349</span>
     }
   },
-  "usage": { "input_tokens": 133, "output_tokens": 0 }
+  "usage": { "input_tokens": 133, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 912.0ms · Output Tokens: 0.</strong> Calibrated boolean confidence is 97.82%. The automated agent immediately detaches and flags a high-priority supervisor pager ticket.
+            <strong>Latency: 912.0ms · Text Tokens: 0 · Decision Tokens: 1.</strong> Calibrated boolean confidence is 97.82%. The automated agent immediately detaches and flags a high-priority supervisor pager ticket.
           </div>
         </div>
       </div>
@@ -442,13 +444,13 @@ question = {
       "confidence": <span class="code-hl-num">0.9002052001662746</span>
     }
   },
-  "usage": { "input_tokens": 196, "output_tokens": 0 }
+  "usage": { "input_tokens": 196, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 950.8ms · Output Tokens: 0.</strong> The chunk receives a 93.35% relevance score and is retained for synthesis, filtering out low-scoring semantic vector duplicates.
+            <strong>Latency: 950.8ms · Text Tokens: 0 · Decision Tokens: 1.</strong> The chunk receives a 93.35% relevance score and is retained for synthesis, filtering out low-scoring semantic vector duplicates.
           </div>
         </div>
       </div>
@@ -509,13 +511,13 @@ question = {
       "confidence": <span class="code-hl-num">0.9291520243706403</span>
     }
   },
-  "usage": { "input_tokens": 186, "output_tokens": 0 }
+  "usage": { "input_tokens": 186, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 618.5ms · Output Tokens: 0.</strong> Direct contradiction verified at 95.28% confidence. Automated output is dropped and re-queued for correction.
+            <strong>Latency: 618.5ms · Text Tokens: 0 · Decision Tokens: 1.</strong> Direct contradiction verified at 95.28% confidence. Automated output is dropped and re-queued for correction.
           </div>
         </div>
       </div>
@@ -565,13 +567,13 @@ question = {
       "noul": <span class="code-hl-num">0.9993997194342968</span>
     }
   },
-  "usage": { "input_tokens": 121, "output_tokens": 0 }
+  "usage": { "input_tokens": 121, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 473.6ms · Output Tokens: 0.</strong> Injection detected with <strong>99.94% certainty</strong> in 473ms. Ingress firewall aborts request before token generation begins.
+            <strong>Latency: 473.6ms · Text Tokens: 0 · Decision Tokens: 1.</strong> Injection detected with <strong>99.94% certainty</strong> in 473ms. Ingress firewall aborts request before token generation begins.
           </div>
         </div>
       </div>
@@ -631,13 +633,13 @@ question = {
       "confidence": <span class="code-hl-num">0.9974031535654837</span>
     }
   },
-  "usage": { "input_tokens": 174, "output_tokens": 0 }
+  "usage": { "input_tokens": 174, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 938.4ms · Output Tokens: 0.</strong> The model scores commercial readiness at 99.83%, immediately provisioning calendar reservation workflows.
+            <strong>Latency: 938.4ms · Text Tokens: 0 · Decision Tokens: 1.</strong> The model scores commercial readiness at 99.83%, immediately provisioning calendar reservation workflows.
           </div>
         </div>
       </div>
@@ -699,13 +701,13 @@ question = {
       "confidence": <span class="code-hl-num">0.9829780515729301</span>
     }
   },
-  "usage": { "input_tokens": 204, "output_tokens": 0 }
+  "usage": { "input_tokens": 204, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 862.9ms · Output Tokens: 0.</strong> Critical risk classified at 98.87%. Automated CI blocks merge and halts deployment pipeline.
+            <strong>Latency: 862.9ms · Text Tokens: 0 · Decision Tokens: 1.</strong> Critical risk classified at 98.87%. Automated CI blocks merge and halts deployment pipeline.
           </div>
         </div>
       </div>
@@ -767,13 +769,13 @@ question = {
       "confidence": <span class="code-hl-num">0.9689505451975693</span>
     }
   },
-  "usage": { "input_tokens": 168, "output_tokens": 0 }
+  "usage": { "input_tokens": 168, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 635.8ms · Output Tokens: 0.</strong> Assigned to <code>ip_violation</code> at 97.67% confidence. Link quarantined instantly without secondary review.
+            <strong>Latency: 635.8ms · Text Tokens: 0 · Decision Tokens: 1.</strong> Assigned to <code>ip_violation</code> at 97.67% confidence. Link quarantined instantly without secondary review.
           </div>
         </div>
       </div>
@@ -837,13 +839,13 @@ question = {
       "confidence": <span class="code-hl-num">0.9958666706311826</span>
     }
   },
-  "usage": { "input_tokens": 216, "output_tokens": 0 }
+  "usage": { "input_tokens": 216, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 1,100.3ms · Output Tokens: 0.</strong> Decider scores Branch B at <strong>99.72%</strong>, allowing the agent to commit the architectural fix without backtracking.
+            <strong>Latency: 1,100.3ms · Text Tokens: 0 · Decision Tokens: 1.</strong> Decider scores Branch B at <strong>99.72%</strong>, allowing the agent to commit the architectural fix without backtracking.
           </div>
         </div>
       </div>
@@ -892,13 +894,13 @@ question = {
       "noul": <span class="code-hl-num">0.9953411391138169</span>
     }
   },
-  "usage": { "input_tokens": 140, "output_tokens": 0 }
+  "usage": { "input_tokens": 140, "generated_text_tokens": 0, "decision_tokens": 1 }
 }
               </code>
             </div>
           </div>
           <div class="eval-box">
-            <strong>Latency: 571.8ms · Output Tokens: 0.</strong> Secret detected at 99.53% confidence. Payload transmission is intercepted and credential rotation is scheduled.
+            <strong>Latency: 571.8ms · Text Tokens: 0 · Decision Tokens: 1.</strong> Secret detected at 99.53% confidence. Payload transmission is intercepted and credential rotation is scheduled.
           </div>
         </div>
       </div>
@@ -966,7 +968,7 @@ if decider.decide(response)["contradicted"] > 0.8:
           <div class="code-box">
             <code>
 <span class="code-hl-kw">def</span> <span class="code-hl-fn">decider_router_node</span>(state: AgentState):
-    <span class="code-hl-comm"># Zero-token routing without regex or JSON parsing</span>
+    <span class="code-hl-comm"># Decision token routing without text generation or regex parsing</span>
     result = decider.decide({
         <span class="code-hl-str">"state"</span>: state[<span class="code-hl-str">"messages"</span>][-1].content,
         <span class="code-hl-str">"questions"</span>: {<span class="code-hl-str">"route"</span>: {
@@ -1030,9 +1032,9 @@ workflow.add_conditional_edges(<span class="code-hl-str">"supervisor"</span>, de
             </tr>
             <tr>
               <td><strong>Output Tokens Consumed</strong></td>
-              <td>35 – 180 tokens per routing step</td>
-              <td><strong>0 tokens (Direct Readout Tensor)</strong></td>
-              <td><span class="tag tag--teal">100% Token Cost Reduction</span></td>
+              <td>35 – 180 sequential text tokens</td>
+              <td><strong>0 generated text tokens · 1 Decision Token</strong></td>
+              <td><span class="tag tag--teal">Zero Generation Overhead</span></td>
             </tr>
             <tr>
               <td><strong>Format Parsing Failures</strong></td>
@@ -1048,6 +1050,11 @@ workflow.add_conditional_edges(<span class="code-hl-str">"supervisor"</span>, de
             </tr>
           </tbody>
         </table>
+        <div class="card card--dark" style="margin-top:.8vh;padding:.8vh 1.0vw;border-left:4px solid var(--teal);">
+          <p style="font-size:.85rem;line-height:1.5;margin:0;color:#cbd5e1;">
+            <strong style="color:#fff;">Decision Tokens vs. Generated Text Tokens:</strong> While traditional text generation consumes 35–180 sequential tokens, decision models generate 0 text tokens (zero autoregressive decoding loop). However, the model outputs discrete <strong>decision tokens</strong>—extracting calibrated probability vectors at question marker locations in a single forward pass.
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -1368,7 +1375,7 @@ save_file({<span class="code-hl-str">"weight"</span>: decider.readout.weight.cpu
         <div class="card card--accent">
           <h3 class="h3">Rule 1 · Never Generate When You Can Classify</h3>
           <p style="font-size:.90rem;line-height:1.6;color:var(--text);margin:0;">
-            If the output of a step is a routing destination, a true/false gate, or a category choice, never prompt a generative model to produce text. Use a decision model to obtain direct, calibrated probabilities.
+            If the output of a step is a routing destination, a true/false gate, or a category choice, never prompt a generative model to emit conversational text tokens. Use a decision model to emit discrete <strong>decision tokens</strong> with calibrated probabilities in a single forward pass.
           </p>
         </div>
         <div class="card card--blue">
